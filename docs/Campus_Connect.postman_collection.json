@@ -1,0 +1,68 @@
+{
+  "info": {
+    "name": "Campus Connect API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api" },
+    { "key": "token", "value": "" },
+    { "key": "solicitud_id", "value": "1" },
+    { "key": "evidencia_id", "value": "1" },
+    { "key": "recurso_id", "value": "1" },
+    { "key": "responsable_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "auth": { "type": "noauth" },
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"email\": \"estudiante@campusconnect.com\",\n  \"password\": \"12345678\",\n  \"device_name\": \"Flutter\"\n}" }, "url": "{{base_url}}/login" },
+          "event": [{ "listen": "test", "script": { "exec": ["if (pm.response.code === 200) pm.collectionVariables.set('token', pm.response.json().data.token);"] } }]
+        },
+        { "name": "Me", "request": { "method": "GET", "url": "{{base_url}}/me" } },
+        { "name": "Logout", "request": { "method": "POST", "url": "{{base_url}}/logout" } }
+      ]
+    },
+    {
+      "name": "Solicitudes",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "url": "{{base_url}}/solicitudes" } },
+        { "name": "Crear", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Proyector no funciona\",\n  \"descripcion\": \"No enciende\",\n  \"tipo\": \"EQUIPAMIENTO\",\n  \"ubicacion\": \"Aula 305\"\n}" }, "url": "{{base_url}}/solicitudes" } },
+        { "name": "Detalle", "request": { "method": "GET", "url": "{{base_url}}/solicitudes/{{solicitud_id}}" } },
+        { "name": "Editar", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Proyector dañado\"\n}" }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}" } },
+        { "name": "Eliminar", "request": { "method": "DELETE", "url": "{{base_url}}/solicitudes/{{solicitud_id}}" } },
+        { "name": "Historial", "request": { "method": "GET", "url": "{{base_url}}/solicitudes/{{solicitud_id}}/historial" } },
+        { "name": "Comentarios", "request": { "method": "GET", "url": "{{base_url}}/solicitudes/{{solicitud_id}}/comentarios" } },
+        { "name": "Adjuntar evidencia", "request": { "method": "POST", "body": { "mode": "formdata", "formdata": [{ "key": "archivo", "type": "file", "src": [] }] }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}/evidencias" } },
+        { "name": "Eliminar evidencia", "request": { "method": "DELETE", "url": "{{base_url}}/evidencias/{{evidencia_id}}" } }
+      ]
+    },
+    {
+      "name": "Administración",
+      "item": [
+        { "name": "Cambiar estado", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"estado\": \"EN_PROCESO\"\n}" }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}/estado" } },
+        { "name": "Cambiar prioridad", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"prioridad\": \"ALTA\"\n}" }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}/prioridad" } },
+        { "name": "Asignar responsable", "request": { "method": "PATCH", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"responsable_id\": {{responsable_id}}\n}" }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}/responsable" } },
+        { "name": "Agregar comentario", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"contenido\": \"Se programó revisión\"\n}" }, "url": "{{base_url}}/solicitudes/{{solicitud_id}}/comentarios" } },
+        { "name": "Dashboard", "request": { "method": "GET", "url": "{{base_url}}/dashboard" } },
+        { "name": "Reporte", "request": { "method": "GET", "url": "{{base_url}}/reportes/solicitudes?estado=PENDIENTE" } }
+      ]
+    },
+    {
+      "name": "Recursos",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "url": "{{base_url}}/recursos" } },
+        { "name": "Crear", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Proyector 01\",\n  \"tipo\": \"EQUIPO\",\n  \"estado\": \"DISPONIBLE\"\n}" }, "url": "{{base_url}}/recursos" } },
+        { "name": "Detalle", "request": { "method": "GET", "url": "{{base_url}}/recursos/{{recurso_id}}" } },
+        { "name": "Actualizar", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"estado\": \"EN_USO\"\n}" }, "url": "{{base_url}}/recursos/{{recurso_id}}" } },
+        { "name": "Eliminar", "request": { "method": "DELETE", "url": "{{base_url}}/recursos/{{recurso_id}}" } }
+      ]
+    }
+  ]
+}
