@@ -9,9 +9,17 @@ use Illuminate\Validation\Rule;
 
 class RecursoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(['success' => true, 'data' => Recurso::latest()->paginate(20)]);
+        $query = Recurso::query();
+        $query->when($request->filled('tipo'), fn ($q) => $q->where('tipo', $request->input('tipo')));
+        $query->when($request->filled('estado'), fn ($q) => $q->where('estado', $request->input('estado')));
+        $query->when($request->filled('buscar'), function ($q) use ($request) {
+            $term = '%'.$request->input('buscar').'%';
+            $q->where(fn ($sub) => $sub->where('nombre', 'like', $term)->orWhere('descripcion', 'like', $term));
+        });
+
+        return response()->json(['success' => true, 'data' => $query->latest()->paginate(20)]);
     }
 
     public function store(Request $request)
