@@ -23,6 +23,15 @@ class SolicitudController extends Controller
             $query->when($request->filled($filter), fn ($q) => $q->where($filter, $request->input($filter)));
         }
 
+        $query->when($request->filled('buscar'), function ($q) use ($request) {
+            $term = '%'.$request->input('buscar').'%';
+            $q->where(function ($sub) use ($term) {
+                $sub->where('titulo', 'like', $term)
+                    ->orWhere('descripcion', 'like', $term)
+                    ->orWhere('ubicacion', 'like', $term);
+            });
+        });
+
         return response()->json(['success' => true, 'data' => $query->latest()->paginate(min($request->integer('per_page', 15), 100))]);
     }
 

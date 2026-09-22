@@ -29,5 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('recursos', RecursoController::class);
         Route::get('dashboard', DashboardController::class);
         Route::get('reportes/solicitudes', [ReporteController::class, 'solicitudes']);
+        Route::get('administrativos', [AdministracionController::class, 'administrativos']);
     });
 });

@@ -42,6 +42,13 @@ class AdministracionController extends Controller
         return response()->json(['success' => true, 'message' => 'Responsable asignado.', 'data' => $solicitud->load('responsable:id,name,email')]);
     }
 
+    public function administrativos()
+    {
+        $users = User::where('role', 'ADMINISTRATIVO')->select('id', 'name', 'email')->get();
+
+        return response()->json(['success' => true, 'data' => $users]);
+    }
+
     private function registrar(Request $request, Solicitud $solicitud, string $accion, ?string $anterior = null, ?string $nuevo = null, ?string $descripcion = null): void
     {
         HistorialSolicitud::create(['solicitud_id' => $solicitud->id, 'user_id' => $request->user()->id, 'accion' => $accion, 'estado_anterior' => $anterior, 'estado_nuevo' => $nuevo, 'descripcion' => $descripcion]);
